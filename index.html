@@ -16,7 +16,7 @@
     }
 
     .container {
-      max-width: 800px;
+      max-width: 794px; /* largura A4 em pixels */
       margin: auto;
       padding: 20px;
       background: white;
@@ -142,11 +142,6 @@
         return;
       }
 
-      if ((shareDebito + shareCredito) !== 1) {
-        alert("A soma de Share Débito e Share Crédito deve ser 100%.");
-        return;
-      }
-
       const valorDebito = faturamento * shareDebito;
       const valorCredito = faturamento * shareCredito;
 
@@ -156,24 +151,29 @@
       const economiaMensal = Math.abs(custo1 - custo2);
       const economiaAnual = economiaMensal * 12;
 
+      const vantagem = custo2 < custo1 
+        ? "A proposta do concorrente é mais vantajosa." 
+        : "Nossa proposta atual é mais vantajosa.";
+
       const resultado = document.getElementById("resultado");
       resultado.innerHTML = `
-        <strong>Seu custo mensal atual:</strong> R$ ${custo1.toFixed(2)}<br>
+        <strong>Nosso custo mensal atual:</strong> R$ ${custo1.toFixed(2)}<br>
         <strong>Custo mensal com o concorrente:</strong> R$ ${custo2.toFixed(2)}<br>
         <strong>Economia mensal:</strong> R$ ${economiaMensal.toFixed(2)}<br>
         <strong>Economia anual:</strong> R$ ${economiaAnual.toFixed(2)}<br><br>
-        <strong>${custo2 < custo1 ? "A proposta do concorrente é mais vantajosa." : "Nossa proposta atual é mais vantajosa."}</strong>
+        <strong>${vantagem}</strong>
       `;
     }
 
     function exportarPDF() {
       const areaPDF = document.getElementById("area-pdf");
       const opt = {
-        margin: 0.5,
-        filename: 'comparativo-taxas.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        margin:       [0.5, 0.5, 0.5, 0.5],
+        filename:     'comparativo-taxas.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
       };
 
       html2pdf().set(opt).from(areaPDF).save();
